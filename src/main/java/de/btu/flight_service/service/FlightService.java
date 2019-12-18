@@ -32,7 +32,7 @@ import java.util.*;
 public class FlightService implements IFlightService {
 
     @Value("${spring.elasticsearch.rest.uris}")
-    private String host = "localhost";
+    private String host = "84.201.186.8";
 
     @Value("${elasticsearch.index")
     private String index;
