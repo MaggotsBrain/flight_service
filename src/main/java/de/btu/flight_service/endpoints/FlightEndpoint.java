@@ -6,10 +6,7 @@ import de.btu.flight_service.models.FlightGetRequest;
 import de.btu.flight_service.models.FlightResponse;
 import de.btu.flight_service.models.IcaoListResponse;
 import de.btu.flight_service.service.FlightService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,24 +21,28 @@ public class FlightEndpoint implements IFlightService {
     }
 
     @Override
+    @CrossOrigin
     @RequestMapping(value = "/add", method = {RequestMethod.POST})
     public boolean add(@RequestBody FlightAddRequest request) {
         return flightService.add(request);
     }
 
     @Override
+    @CrossOrigin
     @RequestMapping(value = "/get", method = {RequestMethod.POST})
     public List<FlightResponse> get(@RequestBody FlightGetRequest request) {
         return flightService.get(request);
     }
 
     @Override
+    @CrossOrigin
     @RequestMapping(value = "/getAll", method = {RequestMethod.POST})
     public List<FlightResponse> getAll() {
         return flightService.getAll();
     }
 
     @Override
+    @CrossOrigin
     @RequestMapping(value = "/icao", method = {RequestMethod.POST})
     public IcaoListResponse listIcao() {
         return flightService.listIcao();
