@@ -13,6 +13,8 @@ public interface IFlightService {
 
     List<FlightResponse> get(FlightGetRequest request);
 
+    FlightResponse getLast(FlightGetRequest request);
+
     List<FlightResponse> getAll();
 
     IcaoListResponse listIcao();
