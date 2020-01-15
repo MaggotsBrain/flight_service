@@ -36,6 +36,13 @@ public class FlightEndpoint implements IFlightService {
 
     @Override
     @CrossOrigin
+    @RequestMapping(value = "/getLast", method = {RequestMethod.POST})
+    public FlightResponse getLast(@RequestBody FlightGetRequest request) {
+        return flightService.getLast(request);
+    }
+
+    @Override
+    @CrossOrigin
     @RequestMapping(value = "/getAll", method = {RequestMethod.POST})
     public List<FlightResponse> getAll() {
         return flightService.getAll();

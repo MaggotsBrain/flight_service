@@ -114,6 +114,39 @@ public class FlightService implements IFlightService {
         }
     }
 
+    @Override
+    public FlightResponse getLast(FlightGetRequest message) {
+        List<FlightResponse> response = new ArrayList<>();
+        try {
+            SearchRequest searchRequest = new SearchRequest("flights");
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+            searchSourceBuilder.query(new MatchQueryBuilder("ICAO", message.getIcao()));
+            searchRequest.source(searchSourceBuilder);
+
+            SearchResponse flightsResponse = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
+
+            SearchHit[] searchHits = flightsResponse.getHits().getHits();
+            for (SearchHit hit : searchHits) {
+                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+                response.add(FlightResponse.builder().
+                        icao(sourceAsMap.get("ICAO").toString())
+                        .callsign(sourceAsMap.get("Callsign").toString())
+                        .speed(sourceAsMap.get("Speed").toString())
+                        .heading(sourceAsMap.get("Heading").toString())
+                        .position(sourceAsMap.get("Position").toString())
+                        .eo(sourceAsMap.get("eo").toString())
+                        .parity(sourceAsMap.get("Parity").toString())
+                        .time(sourceAsMap.get("Time").toString())
+                        .build());
+            }
+            return response.get(response.size() - 1);
+
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            return response.get(response.size() - 1);
+        }
+    }
+
     public List<FlightResponse> getAll() {
         List<FlightResponse> response = new ArrayList<>();
         try {
