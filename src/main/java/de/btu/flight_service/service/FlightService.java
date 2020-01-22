@@ -191,6 +191,7 @@ public class FlightService implements IFlightService {
             SearchRequest searchRequest = new SearchRequest("flights");
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
             searchSourceBuilder.fetchSource(includeFields, excludeFields);
+            searchSourceBuilder.size(10000);
             searchRequest.source(searchSourceBuilder);
 
             SearchResponse flightsResponse = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
