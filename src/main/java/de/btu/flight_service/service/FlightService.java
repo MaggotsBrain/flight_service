@@ -18,6 +18,8 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -64,6 +67,7 @@ public class FlightService implements IFlightService {
             final XContentBuilder builder = XContentFactory.jsonBuilder();
             builder.startObject();
             {
+                builder.field("timestamp", LocalDateTime.now());
                 builder.field("ICAO", messsage.getIcao());
                 builder.field("Callsign", messsage.getCallsign());
                 builder.field("Speed", messsage.getSpeed());
@@ -121,8 +125,8 @@ public class FlightService implements IFlightService {
             SearchRequest searchRequest = new SearchRequest("flights");
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
             searchSourceBuilder.query(new MatchQueryBuilder("ICAO", message.getIcao()));
+            searchSourceBuilder.sort(new FieldSortBuilder("timestamp").order(SortOrder.DESC));
             searchRequest.source(searchSourceBuilder);
-
             SearchResponse flightsResponse = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
 
             SearchHit[] searchHits = flightsResponse.getHits().getHits();
@@ -139,7 +143,7 @@ public class FlightService implements IFlightService {
                         .time(sourceAsMap.get("Time").toString())
                         .build());
             }
-            return response.get(response.size() - 1);
+            return response.get(0);
 
         } catch (IOException e) {
             logger.error(e.getMessage());
